@@ -83,14 +83,18 @@ class Home extends CI_Controller {
 
 		if (empty($username) || empty($password)) {
 			$this->session->set_flashdata('error', 'Mohon untuk melengkapi username dan password');
-			return redirect('home', 'refresh', 401);
+			return redirect('home', 'auto', 401);
 		}
 
 		$result = $this->User_model->get_by_credentials($username, $password);
 
 		if (is_null($result)) {
 			$this->session->set_flashdata('error', 'Username atau password salah');
-			return redirect('home', 'refresh', 401);
+			$this->output->set_status_header(401);
+
+			$login_url = base_url('home');
+			echo "<script>window.location.href='{$login_url}';</script>";
+			exit;
 		}
 
 		$this->session->set_userdata('user', $result);
